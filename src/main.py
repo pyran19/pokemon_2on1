@@ -3,9 +3,10 @@ from matching import Matching
 from diagram import draw_diagram
 from pool import Pool
 
-pool = Pool("sample.csv")
+pool = Pool("7pokemon1.csv")
 pool.make_graph()
 matching = Matching(pool)
 matching.calc()
 matching.reduce()
-draw_diagram(matching.teams, matching.reduced_matrix, matching.dominated)
+matching.save()
+draw_diagram(matching.teams, pool.output_path, matching.reduced_matrix, matching.dominated)

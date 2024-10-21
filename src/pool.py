@@ -23,7 +23,7 @@ class Pool:
             dot.node(node)
         for _, row in self.edges.iterrows():
             dot.edge(row["source"], row["target"])
-        dot.render("output/pool", view=True)
+        dot.render(str(self.output_path/"pool"), view=True)
 
     def make_matrix(self):
         self.matrix = [[0]*len(self.nodes) for _ in range(len(self.nodes))]
