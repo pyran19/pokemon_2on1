@@ -3,8 +3,8 @@
 import graphviz
 
 
-def draw_diagram(teams,path,matrix,dominated=[]):
-    teams = teams.drop(index=dominated)
+def draw_diagram(teams,path,matrix,reduced=[]):
+    teams = teams.drop(index=reduced)
     n = len(matrix)
     dot = graphviz.Digraph(format="svg")
     for i in range(n):

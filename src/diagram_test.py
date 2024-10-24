@@ -15,7 +15,7 @@ teams=pd.DataFrame({"name": ["AB","AC","AD","BC","BD","CD"]})
 
 class TestDiagram(unittest.TestCase):
     def test_draw_diagram(self):
-        draw_diagram(teams,Path("output/sample"), A,dominated=[0])
+        draw_diagram(teams,Path("output/sample"), A,reduced=[0])
         print("想定通りのダイアグラムだった？ y/n")
         is_desired=input()
         self.assertEqual(is_desired, "y")
