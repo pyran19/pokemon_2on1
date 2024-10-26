@@ -3,16 +3,8 @@ import unittest
 import numpy as np
 
 class TestNashTeam(unittest.TestCase):
-    def test_judgeEffective(self):
-        dummy_matrix = np.array([[0., 0.],
-                                [0., 0.]])
-        analyser = nash_team.NashTeamAnalyser(dummy_matrix)
-        x=[0.4,0,0.3,0.2,0,0.1]
-        effective_team , ineffective_team = analyser.judgeEffective(x)
-        self.assertEqual(set(effective_team+ineffective_team), set(range(len(x))))
-        self.assertEqual(effective_team, [0, 2, 3, 5])
-        self.assertEqual(ineffective_team, [1,4])
-    def test_nash_team(self):
+    def test_single_nash(self):
+        # 単一のナッシュ均衡が存在する場合
         A = np.array([[0., 0., -0.5, 1., 0.],
         [0., 0., -0.33, 1.,  0.33],
         [0.5, 0.33, 0., 1.,  -0.33],
@@ -24,18 +16,40 @@ class TestNashTeam(unittest.TestCase):
         self.assertEqual(ineffective_team, [0,3])
         effective_team = analyser.get_effective_team()
         self.assertEqual(effective_team, [1, 2, 4])
-    def test_specified_connected_team(self):
-        A = np.array([[0., 0., -0.5, 1., 0.],
-        [0., 0., -0.33, 1.,  0.33],
-        [0.5, 0.33, 0., 1.,  -0.33],
-        [-1., -1., -1., 0.,  0.5],
-        [0., -0.33, 0.33, -0.5,  0.]])
+    def test_multiple_nash(self):
+        # 複数のナッシュ均衡が存在する場合
+        A = np.array([[0., 0., -0.5, 1.,0., 0.],
+        [0., 0., -0.33, 1.,0.,  0.33],
+        [0.5, 0.33, 0., 1.,0.,  -0.33],
+        [-1., -1., -1., 0.,0.,  0.5],
+        [0.,0.,0.,0.,0.,0.],
+        [0., -0.33, 0.33, -0.5,  0.,0.]])
         analyser = nash_team.NashTeamAnalyser(A)
-        analyser.calc(alive=[1])
+        analyser.calc()
         ineffective_team = analyser.get_ineffective_team()
         self.assertEqual(ineffective_team, [0,3])
         effective_team = analyser.get_effective_team()
-        self.assertEqual(effective_team, [1, 2, 4])
-
+        self.assertEqual(effective_team, [1, 2, 4, 5])
+    @unittest.skip("skip")
+    def test_multiple_nash2(self):
+        # 複数のナッシュ均衡が存在する場合
+        A = np.array([
+        [0., -0.33, 0., -0.5, 0.33, 1., 0., 0.33, 0., 0.],
+        [0.33, 0., 0.5, 0., -0.33, 1., -0.33, 0., 0., 0.],
+        [0., -0.5, 0., -0.33, 0., 1., 0.33, 0., 0., 0.33],
+        [0.5, 0., 0.33, 0., 0., 1., 0., -0.33, 0., -0.33],
+        [-0.33, 0.33, 0., 0., 0., 0., 0., 0., 0., 0.],
+        [-1., -1., -1., -1., 0., 0., 0., 0., 0.5, 0.],
+        [0., 0.33, -0.33, 0., 0., 0., 0., 0., 0., 0.],
+        [-0.33, 0., 0., 0.33, 0., 0., 0., 0., 0., 0.],
+        [0., 0., 0., 0., 0., -0.5, 0., 0., 0., 0.],
+        [0., 0., -0.33, 0.33, 0., 0., 0., 0., 0., 0.]
+        ])
+        analyser = nash_team.NashTeamAnalyser(A)
+        analyser.calc()
+        ineffective_team = analyser.get_ineffective_team()
+        self.assertEqual(ineffective_team, [5,8])
+        effective_team = analyser.get_effective_team()
+        self.assertEqual(effective_team, [0,1,2,3,4,6,7])
 if __name__ == '__main__':
     unittest.main()

@@ -1,15 +1,15 @@
 # このファイルでは構築作成のゲームについてナッシュ均衡を求める
 
-from minimax import minimax
+from minimax import minimax, minimax_zero
 
 
 class NashTeamAnalyser:
     def __init__(self, A):
         self.A = A
-    def calc(self,alive=[]):
-        x,v =minimax(self.A,alive)
+    def calc(self):
+        x,v =minimax(self.A)
         if round(v,2) == 0:
-            self.effective_team , self.ineffective_team = self.judgeEffective(x)
+            self.effective_team , self.ineffective_team = self.judgeEffective(v)
         else:
             raise ValueError("対称ゲームなので0になるはず")
     def get_effective_team(self):
@@ -18,7 +18,7 @@ class NashTeamAnalyser:
     def get_ineffective_team(self):
         # 非効率的なチームのindexを返す
         return self.ineffective_team
-    def judgeEffective(self,teams):
+    def _judgeEffective(self,teams):
         # チームが効率的かどうかを判定する
         effective_team = []
         ineffective_team = []
@@ -28,4 +28,10 @@ class NashTeamAnalyser:
             else:
                 ineffective_team.append(index)
         return effective_team , ineffective_team
+    def judgeEffective(self,v):
+        n,m = self.A.shape
+        zero_in_all_equilibria = minimax_zero(self.A,v)
+        effective_team = [i for i in range(m) if i not in zero_in_all_equilibria]
+        ineffective_team = [i for i in range(m) if i in zero_in_all_equilibria]
+        return effective_team, ineffective_team
 
